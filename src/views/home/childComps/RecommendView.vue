@@ -28,7 +28,7 @@ export default {
     width: 100%;
     display: flex;
     text-align: center;
-    font-size: 0.8vw;
+    font-size: 3vw;
 
     padding: 8px 0 20px;
     border-bottom: 10px solid #eee;
