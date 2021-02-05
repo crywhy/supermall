@@ -1,8 +1,12 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-
-    <scroll>
+      <scroll class="content"
+              ref="scroll"
+              :probe-type="3"
+              :pull-up-load="true"
+              @scroll="contentScroll"
+              @pullingUp="handleLoadMore">
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view />
@@ -12,60 +16,8 @@
         @tabClick="tabClick"
       />
       <goods-list :goods="showGoods"></goods-list>
-    </scroll>
-
-    <ul>
-      <li>内容1</li>
-      <li>内容2</li>
-      <li>内容3</li>
-      <li>内容4</li>
-      <li>内容5</li>
-      <li>内容6</li>
-      <li>内容7</li>
-      <li>内容8</li>
-      <li>内容9</li>
-      <li>内容10</li>
-      <li>内容11</li>
-      <li>内容12</li>
-      <li>内容13</li>
-      <li>内容14</li>
-      <li>内容15</li>
-      <li>内容16</li>
-      <li>内容17</li>
-      <li>内容18</li>
-      <li>内容19</li>
-      <li>内容20</li>
-      <li>内容21</li>
-      <li>内容22</li>
-      <li>内容23</li>
-      <li>内容24</li>
-      <li>内容25</li>
-      <li>内容26</li>
-      <li>内容27</li>
-      <li>内容28</li>
-      <li>内容29</li>
-      <li>内容30</li>
-      <li>内容31</li>
-      <li>内容32</li>
-      <li>内容33</li>
-      <li>内容34</li>
-      <li>内容35</li>
-      <li>内容36</li>
-      <li>内容37</li>
-      <li>内容38</li>
-      <li>内容39</li>
-      <li>内容40</li>
-      <li>内容41</li>
-      <li>内容42</li>
-      <li>内容43</li>
-      <li>内容44</li>
-      <li>内容45</li>
-      <li>内容46</li>
-      <li>内容47</li>
-      <li>内容48</li>
-      <li>内容49</li>
-      <li>内容50</li>
-    </ul>
+      </scroll>
+      <back-top v-show="backTopViews" @click.native="handleBackTop"/>
   </div>
 </template>
 
@@ -78,6 +30,7 @@ import NavBar from 'components/common/navbar/NavBar';
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
+import BackTop from "@/components/content/backTop/BackTop";
 
 import {getHomeMultidata, getHomeGoods} from 'network/home';
 
@@ -90,7 +43,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    Scroll
+    Scroll,
+    BackTop
   },
   data() {
     return {
@@ -101,7 +55,8 @@ export default {
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
       },
-      currentType: 'pop'
+      currentType: 'pop',
+      backTopViews: false
     }
   },
   created() {
@@ -131,7 +86,16 @@ export default {
         this.currentType = 'pop'
       }
     },
-
+    handleBackTop() {
+      this.$refs.scroll.scrollTo(0,0, 500)
+    },
+    contentScroll(position) {
+      this.backTopViews = position.y < -1000
+    },
+    handleLoadMore() {
+      this.getHomeGoods(this.currentType)
+      this.$refs.scroll.scroll.refresh()
+    },
     /**
      * 网络请求相关的方法
      * */
@@ -148,15 +112,19 @@ export default {
         this.goods[type].list.push(...res.data.list)
         // console.log(this.goods[type].list)
         this.goods[type].page++
+
+        this.$refs.scroll.finishPullUp()
       })
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   #home {
     padding-top: 44px;
+    height: 100vh;
+    position: relative;
   }
   .home-nav {
     background-color: var(--color-tint);
@@ -165,11 +133,19 @@ export default {
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9999;
+    z-index: 9;
   }
   .tab-control {
-    z-index: 9998;
+    z-index: 8;
     position: sticky;
     top: 44px;
+  }
+  .content {
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>

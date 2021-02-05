@@ -1,7 +1,6 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" ref="wrapper">
     <ul class="center">
-      <button @click="handleClick">按钮</button>
       <li>分类列表1</li>
       <li>分类列表2</li>
       <li>分类列表3</li>
@@ -112,43 +111,43 @@
       <li>分类列表108</li>
       <li>分类列表109</li>
       <li>分类列表110</li>
+      <button @click="handleClick">按钮</button>
     </ul>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
+
 export default {
   name: "Category",
   data() {
     return{
-
+      bscroll: ''
     }
   },
-  created: function () {
-    // new BScroll('.wrapper', {})
-  },
   mounted() {
-    const bscroll = new BScroll('.wrapper', {
+    this.bscroll = new BScroll(this.$refs.wrapper, {
       probeType: 3,
       click: true,
       pullUpLoad: true
     })
-    bscroll.on('scroll', position => {
+    this.bscroll.on('scroll', position => {
       // console.log(position)
     })
 
-    bscroll.on('pullingUp', () => {
+    this.bscroll.on('pullingUp', () => {
       console.log('上拉加载更多')
 
       setTimeout(() => {
-        bscroll.finishPullUp()
+        this.bscroll.finishPullUp()
       }, 2000)
     })
+
   },
   methods: {
     handleClick() {
-      console.log('-----')
+      this.bscroll.scrollTo(0,0,500)
     }
   }
 }
@@ -163,5 +162,6 @@ export default {
   overflow: hidden;
 }
 .center {
+
 }
 </style>
