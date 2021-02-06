@@ -1,20 +1,27 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-      <scroll class="content"
+
+    <tab-control :titles="['流行', '新款', '精选']"
+                 @tabClick="tabClick"
+                 ref="tabControlShow"
+                 class="tab-control"
+                  v-show="isTabFixed"/>
+
+    <scroll class="content"
               ref="scroll"
               :probe-type="3"
               :pull-up-load="true"
+              :momentum="momentum1"
               @scroll="contentScroll"
               @pullingUp="handleLoadMore">
-      <home-swiper :banners="banners" />
+      <home-swiper :banners="banners"
+      @swiperImageLoad ="swiperImageLoad"/>
       <recommend-view :recommends="recommends" />
       <feature-view />
-      <tab-control
-        class="tab-control"
-        :titles="['流行', '新款', '精选']"
+      <tab-control :titles="['流行', '新款', '精选']"
         @tabClick="tabClick"
-      />
+        ref="tabControl"/>
       <goods-list :goods="showGoods"></goods-list>
       </scroll>
       <back-top v-show="backTopViews" @click.native="handleBackTop"/>
@@ -33,6 +40,7 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "@/components/content/backTop/BackTop";
 
 import {getHomeMultidata, getHomeGoods} from 'network/home';
+import {debounce} from "common/utils";
 
 export default {
   name: 'home',
@@ -56,7 +64,11 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      backTopViews: false
+      backTopViews: false,
+      tabOffsetTop: 0,
+      isTabFixed: false,
+      saveY: 0,
+      momentum1: true
     }
   },
   created() {
@@ -66,11 +78,18 @@ export default {
     this.getHomeGoods('pop')
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
+
   },
-  computed: {
-    showGoods() {
-      return this.goods[this.currentType].list
-    }
+  mounted() {
+    // 图片加载完成的事件监听
+    const refresh = debounce(this.$refs.scroll.refresh, 100)
+    this.$bus.$on('itemImageLoad', () => {
+      refresh()
+    })
+
+    // 获取tanControl的offsetTop
+
+
   },
   methods: {
     /**
@@ -78,23 +97,31 @@ export default {
      * */
     tabClick(index) {
       // console.log(index)
-      if (index == 1) {
+      if (index === 1) {
         this.currentType = 'new'
-      }else if (index == 2) {
+      }else if (index === 2) {
         this.currentType = 'sell'
       }else {
         this.currentType = 'pop'
       }
+      this.$refs.tabControl.currentIndex = index
+      this.$refs.tabControlShow.currentIndex = index
     },
     handleBackTop() {
       this.$refs.scroll.scrollTo(0,0, 500)
     },
     contentScroll(position) {
-      this.backTopViews = position.y < -1000
+      this.backTopViews = (-position.y) > 1000
+      this.isTabFixed = this.tabOffsetTop < (-position.y)
+      this.saveY = position.y
     },
     handleLoadMore() {
       this.getHomeGoods(this.currentType)
       this.$refs.scroll.scroll.refresh()
+    },
+    swiperImageLoad() {
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+
     },
     /**
      * 网络请求相关的方法
@@ -113,32 +140,42 @@ export default {
         // console.log(this.goods[type].list)
         this.goods[type].page++
 
+        // 完成上拉加载更多
         this.$refs.scroll.finishPullUp()
       })
     }
+  },
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list
+    }
+  },
+  activated() {
+    this.$refs.scroll.refresh()
+    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY()
+    this.momentum1 = false
+    this.$refs.scroll.refresh()
   }
+
 }
 </script>
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /*padding-top: 44px;*/
     height: 100vh;
     position: relative;
   }
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 9;
   }
   .tab-control {
-    z-index: 8;
-    position: sticky;
-    top: 44px;
+    position: relative;
+    z-index: 12;
   }
   .content {
     overflow: hidden;

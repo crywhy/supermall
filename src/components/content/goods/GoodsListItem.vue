@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item">
-    <a :href="goodsItem.show.link">
-      <img :src="goodsItem.show.img" alt="">
+    <a :href="goodsItem.show.link" @click="handleItemClick(goodsItem)">
+      <img :src="goodsItem.show.img" alt="" @load="imageLoad">
       <div class="goods-info">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span>
@@ -21,7 +21,16 @@
           return {}
         }
       }
-    }
+    },
+    methods: {
+      imageLoad() {
+        this.$bus.$emit('itemImageLoad')
+      },
+      handleItemClick(goodsItem) {
+        console.log(goodsItem.link)
+      }
+    },
+
   }
 </script>
 
