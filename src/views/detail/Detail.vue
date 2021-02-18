@@ -76,7 +76,7 @@ export default {
 
     // 请求详情数据
     geiDetail(this.iid).then(res => {
-      console.log(res)
+      // console.log(res)
       // 1.获取数据
       const data = res.result
 
@@ -158,11 +158,13 @@ export default {
       const product = {}
       product.image = this.topImage[0]
       product.title = this.goods.title
-      product.privce = this.goods.desc
+      product.desc = this.goods.desc
       product.iid = this.iid
-
-      this.$store.commit('addCart', product)
-      // console.log(product)
+      product.realPrice = this.goods.realPrice
+      // commit传到mutations里（同步）
+      // this.$store.commit('addCart', product)
+      // dispatch传到actions里（异步）
+      this.$store.dispatch('addCart', product)
     }
   },
   mounted() {

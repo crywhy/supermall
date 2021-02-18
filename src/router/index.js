@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const Home = () => import('views/home/Home')
 const Category = () => import('views/category/Category')
 const Profile = () => import('views/profile/Profile')
-const ShopCart = () => import('views/shopcart/Shopcart')
+const ShopCart = () => import('views/shopcart/ShopCart')
 const Detail = () => import('views/detail/Detail')
 
 const routes = [
