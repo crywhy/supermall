@@ -6,7 +6,7 @@
 
 <script>
   export default {
-  name: "BackTop"
+    name: "BackTop"
   }
 </script>
 
@@ -14,10 +14,10 @@
   .back-top {
     position: fixed;
     z-index: 10;
-    right: 3vw;
-    bottom: 45px;
+    right: 10px;
+    bottom: 50px;
   }
   .back-top img {
-    width: 15vw;
+    width: 40px;
   }
 </style>

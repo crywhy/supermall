@@ -1,13 +1,11 @@
 <template>
-  <div class="goods-item">
-    <a :href="goodsItem.show.link" @click="handleItemClick(goodsItem)">
-      <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+  <div class="goods-item" @click="handleItemClick(goodsItem)">
+      <img :src="showImage" alt="" @load="imageLoad">
       <div class="goods-info">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span>
         <span class="collect">{{goodsItem.cfav}}</span>
       </div>
-    </a>
   </div>
 </template>
 
@@ -22,14 +20,29 @@
         }
       }
     },
-    methods: {
-      imageLoad() {
-        this.$bus.$emit('itemImageLoad')
-      },
-      handleItemClick(goodsItem) {
-        console.log(goodsItem.link)
+    computed: {
+      showImage() {
+        return this.goodsItem.image || this.goodsItem.show.img
       }
     },
+    methods: {
+      imageLoad() {
+
+        if (this.$route.path.includes('/home')) {
+          this.$bus.$emit('itemImageLoad')
+        } else if (this.$route.path.includes('/detail')) {
+          this.$bus.$emit('detailItemImageLoad')
+        }
+
+      },
+      handleItemClick(goodsItem) {
+        if (goodsItem.iid) {
+          this.$router.push('/detail/' + goodsItem.iid)
+        } else if (goodsItem.item_id) {
+          this.$router.push('/detail/' + goodsItem.item_id)
+        }
+      }
+    }
 
   }
 </script>

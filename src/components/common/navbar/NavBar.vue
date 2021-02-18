@@ -15,9 +15,9 @@ name: "NavBar"
 <style scoped>
   .nav-bar{
     display: flex;
-    line-height: 44px;
+    line-height: 45px;
     text-align: center;
-    box-shadow: 0 1px 1px rgba(255,255,255, .1);
+    box-shadow: 0 1.5px 1px rgba(100,100,100, .1);
   }
 
   .left, .right {

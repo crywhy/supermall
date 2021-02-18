@@ -37,10 +37,10 @@ import NavBar from 'components/common/navbar/NavBar';
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "@/components/content/backTop/BackTop";
 
-import {getHomeMultidata, getHomeGoods} from 'network/home';
+import {getHomeMultidata, getHomeGoods} from "network/home";
 import {debounce} from "common/utils";
+import {backTopMixin} from "common/mixin";
 
 export default {
   name: 'home',
@@ -51,8 +51,7 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   data() {
     return {
@@ -64,13 +63,13 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      backTopViews: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
       momentum1: true
     }
   },
+  mixins: [backTopMixin],
   created() {
     //1. 请求多个数据
     this.getHomeMultidata()
@@ -82,13 +81,12 @@ export default {
   },
   mounted() {
     // 图片加载完成的事件监听
-    const refresh = debounce(this.$refs.scroll.refresh, 100)
+    const refresh = debounce(this.$refs.scroll.refresh, 1e00)
     this.$bus.$on('itemImageLoad', () => {
       refresh()
     })
 
     // 获取tanControl的offsetTop
-
 
   },
   methods: {
@@ -107,13 +105,12 @@ export default {
       this.$refs.tabControl.currentIndex = index
       this.$refs.tabControlShow.currentIndex = index
     },
-    handleBackTop() {
-      this.$refs.scroll.scrollTo(0,0, 500)
-    },
     contentScroll(position) {
-      this.backTopViews = (-position.y) > 1000
       this.isTabFixed = this.tabOffsetTop < (-position.y)
       this.saveY = position.y
+
+      // 在混入里面做判断是否显示BackTop
+      this.listenShowBackTop(position)
     },
     handleLoadMore() {
       this.getHomeGoods(this.currentType)
