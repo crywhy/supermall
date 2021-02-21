@@ -17,8 +17,9 @@
               @pullingUp="handleLoadMore">
       <home-swiper :banners="banners"
       @swiperImageLoad ="swiperImageLoad"/>
-      <recommend-view :recommends="recommends" />
-      <feature-view />
+      <recommend-view :recommends="recommends"
+                      @RecommendImageLoad="RecommendImageLoad"/>
+      <feature-view @FeatureViewLoad="FeatureViewLoad"/>
       <tab-control :titles="['流行', '新款', '精选']"
         @tabClick="tabClick"
         ref="tabControl"/>
@@ -116,9 +117,17 @@ export default {
       this.getHomeGoods(this.currentType)
       this.$refs.scroll.scroll.refresh()
     },
-    swiperImageLoad() {
+    imgLoad() {
       this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
-
+    },
+    swiperImageLoad() {
+      this.imgLoad()
+    },
+    FeatureViewLoad() {
+      this.imgLoad()
+    },
+    RecommendImageLoad() {
+      this.imgLoad()
     },
     /**
      * 网络请求相关的方法
@@ -169,6 +178,8 @@ export default {
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
+    z-index: 30;
+    position: relative;
   }
   .tab-control {
     position: relative;

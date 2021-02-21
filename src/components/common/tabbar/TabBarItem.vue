@@ -58,7 +58,7 @@ export default {
     width: 20px;
     margin-top: 5px;
     vertical-align: middle;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
   }
 
 </style>

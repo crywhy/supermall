@@ -46,6 +46,7 @@
     color: #000;
     margin-top: 15px;
     margin-left: 5px;
+    font-size: 4vw;
   }
   .info-price {
     margin-top: 10px;

@@ -6,12 +6,16 @@
     </nav-bar>
 
     <!-- 商品列表 -->
-      <cart-list />
+    <cart-list />
+
+    <!-- 底部导航 -->
+    <cart-bottom-bar :cartList="cartList"/>
   </div>
 </template>
 
 <script>
   import CartList from "./childComps/CartList";
+  import CartBottomBar from "./childComps/CartBottomBar";
 
   import NavBar from "components/common/navbar/NavBar";
 
@@ -21,6 +25,7 @@
     name: "ShopCart",
     components: {
       CartList,
+      CartBottomBar,
       NavBar
     },
     computed: {

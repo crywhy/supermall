@@ -1,5 +1,5 @@
 <template>
-  <div class="cart-list">
+  <div class="cart-list ignore">
     <scroll class="cart-scroll"
             ref="scroll">
       <cart-list-item v-for="(item,index) in cartList"
@@ -32,7 +32,7 @@
 
 <style scoped>
   .cart-list {
-    height: calc(100vh - 45px - 49px);
+    height: calc(100vh - 45px - 49px - 40px);
   }
   .cart-scroll {
     height: 100%;

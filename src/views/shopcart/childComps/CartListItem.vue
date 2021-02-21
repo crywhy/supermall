@@ -43,7 +43,6 @@
     methods: {
       handleCheckClick() {
         this.product.check = !this.product.check
-        console.log(this.product)
       }
     }
   }
@@ -54,6 +53,7 @@
     height: 40vw;
     padding: 10px 10px 10px 0px;
     border-bottom: 2px #ddd solid;
+    font-size: 14px;
   }
   .check-button {
     float: left;
@@ -84,7 +84,7 @@
     font-size: 13px;
   }
   .cart-price {
-    margin-top: 7vh;
+    margin-top: 9vw;
   }
   .cart-price span:nth-child(1){
     color: coral;

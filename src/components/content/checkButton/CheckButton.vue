@@ -1,7 +1,7 @@
 <template>
   <div class="check-button"
        :class="{check: isChecked}">
-    <img src="~assets/img/cart/tick.svg" alt="">
+    <img v-show="isChecked" src="~assets/img/cart/tick.svg" alt="">
   </div>
 </template>
 
@@ -27,6 +27,7 @@
  .check-button img {
    position: relative;
    right: 1px;
+   width: 4vw;
  }
  .check {
    border: var(--color-tint) solid 2px;

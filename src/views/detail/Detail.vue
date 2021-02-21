@@ -17,8 +17,11 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
+
     <back-top  v-show="backTopViews" @click.native="handleBackTop"/>
     <detail-bottom-bar @shoppingCart="shoppingCart"/>
+
+<!--    <toast message="商品添加成功！" :isShow="true"/>-->
   </div>
 </template>
 
@@ -34,11 +37,12 @@ import DetailBottomBar from "./childComposer/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+import Toast from "components/common/toast/Toast";
 
-
-import {geiDetail, Goods, Shop, GoodsParam, getRecommend} from "network/detail";
-import {debounce} from "common/utils"
-import {backTopMixin} from 'common/mixin'
+import { geiDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail";
+import { debounce } from "common/utils"
+import { backTopMixin } from "common/mixin"
+import { mapActions } from "vuex"
 
 export default {
   name: "Detail",
@@ -54,6 +58,7 @@ export default {
 
     GoodsList,
     Scroll
+    // Toast
   },
   data() {
     return {
@@ -108,6 +113,7 @@ export default {
 
   },
   methods: {
+    ...mapActions(['addCart']),
     handleImageLoad () {
       this.$refs.scroll.refresh()
 
@@ -161,10 +167,18 @@ export default {
       product.desc = this.goods.desc
       product.iid = this.iid
       product.realPrice = this.goods.realPrice
+
       // commit传到mutations里（同步）
       // this.$store.commit('addCart', product)
       // dispatch传到actions里（异步）
-      this.$store.dispatch('addCart', product)
+      // this.$store.dispatch('addCart', product).then(res => {
+      //   console.log(res)
+      // })
+
+      this.addCart(product).then(res => {
+        // console.log(res)
+        this.$toast.show(res, 1500)
+      })
     }
   },
   mounted() {
