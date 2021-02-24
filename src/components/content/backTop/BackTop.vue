@@ -13,7 +13,7 @@
 <style scoped>
   .back-top {
     position: fixed;
-    z-index: 10;
+    z-index: 30;
     right: 10px;
     bottom: 3rem;
   }

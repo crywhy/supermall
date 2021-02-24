@@ -19,10 +19,10 @@ export default {
       // console.log(oldProduct)
       if (oldProduct) {
         context.commit(ADD_COUNTER, oldProduct);
-        resolve('当前的商品+1')
+        resolve('当前的商品添加了')
       } else {
         context.commit(ADD_TO_CART, payload, oldProduct);
-        resolve('添加了新的商品')
+        resolve('添加了商品成功')
       }
     })
   }

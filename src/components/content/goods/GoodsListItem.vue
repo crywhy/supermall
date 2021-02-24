@@ -22,16 +22,17 @@
     },
     computed: {
       showImage() {
-        return this.goodsItem.image || this.goodsItem.show.img
+        return  this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
       }
     },
     methods: {
       imageLoad() {
-
         if (this.$route.path.includes('/home')) {
           this.$bus.$emit('itemImageLoad')
         } else if (this.$route.path.includes('/detail')) {
           this.$bus.$emit('detailItemImageLoad')
+        } else if (this.$route.path.includes('/category')) {
+          this.$bus.$emit('categoryItemImageLoad')
         }
 
       },
@@ -52,6 +53,7 @@
     padding-bottom: 40px;
     position: relative;
     width: 48vw;
+    float: left;
   }
   .goods-item img {
     width: 100%;

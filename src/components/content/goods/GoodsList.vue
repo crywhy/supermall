@@ -2,7 +2,7 @@
   <div class="goods">
     <goods-list-item
       v-for="item in goods"
-      :goods-item="item"/>
+      :goods-item="item" class="goods-list-item"/>
   </div>
 </template>
 
@@ -28,7 +28,10 @@ export default {
 <style scoped>
   .goods {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     justify-content: space-evenly;
+  }
+  .goods-list-item {
+    width: 47%;
   }
 </style>

@@ -41,7 +41,9 @@ export default {
   methods: {
     handleRouterClick() {
       // console.log('ww')
+
       this.$router.replace(this.path).catch(err => {})
+      document.title = this.path.substr(1)
     }
   }
 }

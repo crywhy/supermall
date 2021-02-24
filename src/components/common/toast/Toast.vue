@@ -48,5 +48,6 @@
     padding:8px 12px;
     border-radius: 5px;
     z-index: 99;
+    text-align: center;
   }
 </style>

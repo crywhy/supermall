@@ -32,6 +32,7 @@
 
 <style scoped>
   .cart-list {
+    margin-top: 48px;
     height: calc(100vh - 45px - 49px - 40px);
   }
   .cart-scroll {

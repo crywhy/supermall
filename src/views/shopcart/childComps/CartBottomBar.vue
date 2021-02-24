@@ -33,7 +33,7 @@
         let total = 0
         this.cartList.forEach(item=> {
           if (item.check) {
-            total += +item.realPrice
+            total += +item.realPrice * item.count
           }
         })
         return '￥' + total.toFixed(2)
@@ -43,14 +43,14 @@
       },
       isSelectAll() {
         if (this.cartList.length === 0) return false
-        return !this.cartList.find(item => !item.check)
+        // return !this.cartList.find(item => !item.check)
 
-        // for (let item of this.cartList) {
-        //   if (!item.check) {
-        //     return false
-        //   }
-        // }
-        // return true
+        for (let item of this.cartList) {
+          if (!item.check) {
+            return false
+          }
+        }
+        return true
       }
     },
     methods: {
@@ -62,9 +62,22 @@
         }
       },
       handleNotGoodsClick() {
-        if (!this.isSelectAll) {
+        // const SelectAll = this.cartList.find(item => item.check)
+        if (!this.cartList.find(item => item.check)) {
           this.$toast.show('请选择商品！', 1500)
+        } else {
+          this.$toast.show('您的余额不足！', 2000)
         }
+      },
+      handleRmClick () {
+        const cart = this.cartList
+        for (let i = 0; i < cart.length; i++) {
+          if (cart[i].check) {
+            this.cartList.splice(i, 1);
+            i--;
+          }
+        }
+
       }
     }
   }

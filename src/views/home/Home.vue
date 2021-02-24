@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <nav-bar class="home-nav-bar"><div slot="center">购物街</div></nav-bar>
 
     <tab-control :titles="['流行', '新款', '精选']"
                  @tabClick="tabClick"
@@ -82,7 +82,7 @@ export default {
   },
   mounted() {
     // 图片加载完成的事件监听
-    const refresh = debounce(this.$refs.scroll.refresh, 1e00)
+    const refresh = debounce(this.$refs.scroll.refresh, 200)
     this.$bus.$on('itemImageLoad', () => {
       refresh()
     })
@@ -175,15 +175,18 @@ export default {
     height: 100vh;
     position: relative;
   }
-  .home-nav {
+  .home-nav-bar {
     background-color: var(--color-tint);
     color: #fff;
     z-index: 30;
     position: relative;
+    font-size: 18px;
+    font-weight: 550;
   }
   .tab-control {
     position: relative;
-    z-index: 12;
+    top: -1px;
+    z-index: 21;
   }
   .content {
     overflow: hidden;

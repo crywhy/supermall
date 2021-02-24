@@ -17,7 +17,7 @@
 
     <div class="right-bar">
       <div class="cat" @click="shoppingCart"><span>加入购物车</span></div>
-      <div class="purchase"><span>购买</span></div>
+      <div class="purchase" @click="shoppingBuying"><span>购买</span></div>
     </div>
   </div>
 </template>
@@ -28,6 +28,9 @@
     methods: {
       shoppingCart() {
         this.$emit('shoppingCart')
+      },
+      shoppingBuying() {
+        this.$emit('shoppingBuying')
       }
     }
   }
@@ -46,10 +49,12 @@
     display: flex;
     font-size: 13px;
     text-align: center;
+    line-height: 49px;
   }
   .left-bar {
     display: flex;
     flex: 1;
+    line-height: 20px;
   }
   .left-bar>div {
     flex: 1;
@@ -81,7 +86,6 @@
   .right-bar>div{
     flex: 1;
     font-size: 14px;
-    line-height: 49px;
   }
   .right-bar .cat{
     background-color: yellow;

@@ -18,9 +18,20 @@
       <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
 
-    <back-top  v-show="backTopViews" @click.native="handleBackTop"/>
-    <detail-bottom-bar @shoppingCart="shoppingCart"/>
+      <div class="no-goods"
+           v-if="showNoGoods">该商品已下架！</div>
 
+    <back-top  v-show="backTopViews" @click.native="handleBackTop"/>
+    <detail-bottom-bar @shoppingCart="shoppingCart"
+                       @shoppingBuying="shoppingBuying"/>
+    <shopping-interface ref="interface"
+                        :interface="interface"
+                        :isShowInterface="isShowInterface"
+                        :ifShoppingCart="ifShoppingCart"
+                        :shoppingNum="shoppingNum"
+                        @handleShowClick="handleShoppingClick"
+                        @handleConfirmClick="handleConfirmClick"
+                        @Decrease="Decrease" @Increase="Increase"/>
 <!--    <toast message="商品添加成功！" :isShow="true"/>-->
   </div>
 </template>
@@ -34,12 +45,13 @@ import DetailGoodsInfo from "./childComposer/DetailGoodsInfo";
 import DetailParamInfo from "./childComposer/DetailParamInfo";
 import DetailCommentInfo from "./childComposer/DetailCommentInfo";
 import DetailBottomBar from "./childComposer/DetailBottomBar";
+import ShoppingInterface from "./childComposer/ShoppingInterface";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 import Toast from "components/common/toast/Toast";
 
-import { geiDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail";
+import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail";
 import { debounce } from "common/utils"
 import { backTopMixin } from "common/mixin"
 import { mapActions } from "vuex"
@@ -55,6 +67,7 @@ export default {
     DetailParamInfo,
     DetailCommentInfo,
     DetailBottomBar,
+    ShoppingInterface,
 
     GoodsList,
     Scroll
@@ -71,7 +84,12 @@ export default {
       commentInfo: {},
       recommends: [],
       themeTopYs: [],
-      currentIndex: 0
+      currentIndex: 0,
+      interface: {},
+      isShowInterface: false,
+      ifShoppingCart: true,
+      shoppingNum: 1,
+      showNoGoods: false
     }
   },
   mixins: [backTopMixin],
@@ -80,14 +98,16 @@ export default {
     this.iid = this.$route.params.id
 
     // 请求详情数据
-    geiDetail(this.iid).then(res => {
+    getDetail(this.iid).then(res => {
       // console.log(res)
       // 1.获取数据
-      const data = res.result
+      if (!res) {
+        this.showNoGoods = true
+      }
 
+      const data = res.result
       // 2.获取顶部图片数据
       this.topImage = data.itemInfo.topImages
-
       // 3.获取商品信息
       this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
 
@@ -104,6 +124,8 @@ export default {
       if (data.rate.cRate !== 0) {
         this.commentInfo = data.rate.list[0]
       }
+      // 8. 获取购物选择节目数据
+      this.interface = data.skuInfo
     })
 
     // 请求推荐数据
@@ -161,24 +183,53 @@ export default {
       }
     },
     shoppingCart() {
-      const product = {}
-      product.image = this.topImage[0]
-      product.title = this.goods.title
-      product.desc = this.goods.desc
-      product.iid = this.iid
-      product.realPrice = this.goods.realPrice
+      this.isShowInterface = true
+    },
+    shoppingBuying() {
+      // 判断是加入购物车还是购买
+      this.ifShoppingCart = false
 
-      // commit传到mutations里（同步）
-      // this.$store.commit('addCart', product)
-      // dispatch传到actions里（异步）
-      // this.$store.dispatch('addCart', product).then(res => {
-      //   console.log(res)
-      // })
+      // 显示购物选择菜单
+      this.isShowInterface = true
+    },
+    handleShoppingClick() {
+      // 判断是加入购物车还是购买
+      this.ifShoppingCart = true
 
-      this.addCart(product).then(res => {
-        // console.log(res)
-        this.$toast.show(res, 1500)
-      })
+      this.isShowInterface = false
+    },
+    handleConfirmClick(color, size) {
+      if (color===-1 || size===-1) {
+        this.$toast.show('请选择颜色或者尺寸', 1500)
+      } else {
+        const product = {}
+        product.image = this.topImage[0]
+        product.title = this.goods.title
+        product.desc = this.goods.desc
+        product.iid = this.iid
+        product.realPrice = this.goods.realPrice
+        product.num = this.shoppingNum
+        // commit传到mutations里（同步）
+        // this.$store.commit('addCart', product)
+        // dispatch传到actions里（异步）
+        // this.$store.dispatch('addCart', product).then(res => {
+        //   console.log(res)
+        // })
+        this.addCart(product).then(res => {
+          this.$toast.show(res, 1500)
+        })
+        this.isShowInterface = false
+      }
+    },
+    Decrease() {
+      if (this.shoppingNum < 2) {
+        this.$toast.show('至少要买一件哦', 1500)
+      } else {
+        this.shoppingNum--
+      }
+    },
+    Increase() {
+      this.shoppingNum++
     }
   },
   mounted() {
@@ -188,7 +239,7 @@ export default {
     })
     // console.log(this.$refs);
   },
-  updated() {
+  computed: {
   }
 }
 </script>
@@ -211,5 +262,21 @@ export default {
  .detail-scroll {
    height: calc(100% - 45px - 49px);
    margin-top: 45px;
+   z-index: 2;
+   position: relative;
+   background-color: #fff;
+ }
+ .no-goods {
+   position: fixed;
+   right: 20%;
+   top: 30%;
+   left: 20%;
+   padding: 6px 0  6px 10px;
+   background-color: rgba(0,0,0, .7);
+   text-align: center;
+   color: #fff;
+   font-size: 28px;
+   border-radius: 10px;
+   z-index: 20;
  }
 </style>

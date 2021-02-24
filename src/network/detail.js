@@ -1,6 +1,6 @@
 import {request} from "network/request";
 
-export function geiDetail(iid) {
+export function getDetail(iid) {
   return request({
     url: '/detail',
     params: {
@@ -8,6 +8,7 @@ export function geiDetail(iid) {
     }
   })
 }
+
 export function getRecommend() {
   return request({
     url: '/recommend'

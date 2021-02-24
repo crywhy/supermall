@@ -1,8 +1,8 @@
 <template>
-  <div class="cart-item">
+  <div class="cart-item" @click.stop="handleRouterClick">
     <check-button class="check-button"
                   :is-checked="product.check"
-                  @click.native="handleCheckClick"/>
+                  @click.native.stop="handleCheckClick"/>
     <div class="cart-img">
       <img :src="product.image" alt="">
     </div>
@@ -43,6 +43,9 @@
     methods: {
       handleCheckClick() {
         this.product.check = !this.product.check
+      },
+      handleRouterClick() {
+        this.$router.push('/detail/' + this.product.iid)
       }
     }
   }

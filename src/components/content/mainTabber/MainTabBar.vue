@@ -39,12 +39,11 @@ export default {
   },
   data() {
     return {
-      color: 'deepPink'
+      color: 'var(--color-tint)'
     }
   }
 }
 </script>
 
 <style scoped>
-
 </style>

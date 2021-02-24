@@ -1,13 +1,27 @@
-export function debounce(func, delay=0) {
+export function debounce(func, delay= 0) {
   let timer = null
   return function (...args) {
-
     if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
-      func.apply(this, args)
+      func.apply(this , args)
     }, delay)
   }
 }
+
+export function throttle(fn,wait){
+  var timer = null;
+  return function(){
+    var context = this;
+    var args = arguments;
+    if(!timer){
+      timer = setTimeout(function(){
+        fn.apply(context,args);
+        timer = null;
+      },wait)
+    }
+  }
+}
+
 
 export function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
