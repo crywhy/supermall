@@ -1,6 +1,6 @@
 <template>
   <div class="feature">
-  <a href="https://act.mogujie.com/zzlx67">
+  <a @click.stop="handleClick" href="" >
     <img @load="imgLoad" src="~assets/img/home/recommend_bg.jpg" alt="">
   </a>
   </div>
@@ -12,6 +12,9 @@
     methods: {
       imgLoad () {
         this.$emit('FeatureViewLoad')
+      },
+      handleClick() {
+        this.$router.push('/category')
       }
     }
   }

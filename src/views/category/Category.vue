@@ -68,10 +68,6 @@ export default {
       this._getCategory()
     },
     mounted() {
-      // let refresh = debounce(this.$refs.scroll.refresh(), 200)
-      // this.$bus.$on('imageLoad', () => {
-      //   refresh()
-      // })
       const refresh = debounce(this.$refs.scroll.refresh, 200)
       this.$bus.$on('categoryItemImageLoad', ()=> {
         refresh()
@@ -124,8 +120,11 @@ export default {
         this.currentIndex = index;
         const mailKey = this.categories[index].maitKey;
         getSubcategory(mailKey).then(res => {
+          console.log(mailKey)
           this.categoryData[index].subcategories = res.data
+
           this.categoryData = {...this.categoryData}
+
           this._getCategoryDetail('pop')
           this._getCategoryDetail('sell')
           this._getCategoryDetail('new')

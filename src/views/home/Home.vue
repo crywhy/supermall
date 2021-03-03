@@ -59,15 +59,16 @@ export default {
       banners: [],
       recommends: [],
       goods: {
-        'pop': {page: 0, list: []},
-        'new': {page: 0, list: []},
-        'sell': {page: 0, list: []}
+        'pop': {page: 0, list: [], height: 0},
+        'new': {page: 0, list: [], height: 0},
+        'sell': {page: 0, list: [], height: 0}
       },
       currentType: 'pop',
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
-      momentum1: true
+      momentum1: true,
+      oneFlag: true
     }
   },
   mixins: [backTopMixin],
@@ -98,18 +99,37 @@ export default {
       // console.log(index)
       if (index === 1) {
         this.currentType = 'new'
+
+        this.$refs.scroll.scrollTo(0,this.goods.new.height,100)
       }else if (index === 2) {
         this.currentType = 'sell'
+
+        this.$refs.scroll.scrollTo(0,this.goods.sell.height,100)
       }else {
         this.currentType = 'pop'
+
+        this.$refs.scroll.scrollTo(0,this.goods.pop.height,100)
       }
       this.$refs.tabControl.currentIndex = index
       this.$refs.tabControlShow.currentIndex = index
+
     },
     contentScroll(position) {
       this.isTabFixed = this.tabOffsetTop < (-position.y)
       this.saveY = position.y
 
+      if (this.oneFlag) {
+        this.goods.new.height = -this.tabOffsetTop;
+        this.goods.sell.height = -this.tabOffsetTop;
+        this.oneFlag = false
+      }
+      if (this.currentType === 'pop') {
+        this.goods.pop.height = this.saveY
+      } else if (this.currentType === 'new') {
+        this.goods.new.height = this.saveY
+      } else {
+        this.goods.sell.height = this.saveY
+      }
       // 在混入里面做判断是否显示BackTop
       this.listenShowBackTop(position)
     },

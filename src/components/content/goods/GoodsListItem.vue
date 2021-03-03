@@ -53,10 +53,10 @@
     padding-bottom: 40px;
     position: relative;
     width: 48vw;
-    float: left;
   }
   .goods-item img {
     width: 100%;
+    height: 95%;
     border-radius: 5px;
   }
   .goods-info {

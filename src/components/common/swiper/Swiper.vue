@@ -7,7 +7,10 @@
       </slot>
       <div class="indicator">
         <slot name="indicator" v-if="showIndicator && slideCount>1">
-          <div v-for="(item, index) in slideCount" class="indi-item" :class="{active: index === currentIndex-1}" :key="index"></div>
+          <div v-for="(item, index) in slideCount"
+               class="indi-item"
+               :class="{active: index === currentIndex-1}"
+               :key="index" @click="handleClick(index)"></div>
         </slot>
       </div>
     </div>
@@ -204,6 +207,17 @@
 
         // 3.添加定时器
         this.startTimer();
+      },
+      handleClick(index) {
+        if (this.currentIndex < index + 1) {
+          this.next()
+          this.stopTimer();
+        } else if (this.currentIndex > index + 1) {
+          this.previous()
+          this.stopTimer();
+        }
+        this.currentIndex = index +1
+        this.startTimer();
       }
     }
 	}
@@ -229,14 +243,14 @@
 
   .indi-item {
     box-sizing: border-box;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
     background-color: #fff;
     line-height: 8px;
     text-align: center;
     font-size: 12px;
-    margin: 0 5px;
+    margin: 0 6px;
   }
 
   .indi-item.active {
